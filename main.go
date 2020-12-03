@@ -33,5 +33,9 @@ func main() {
 		b.Send(m.Sender, "Hi!")
 	})
 
+	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
+		b.Reply(m, "سلام خوش اومدی عزیز")
+	})
+
 	b.Start()
 }
