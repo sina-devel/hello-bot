@@ -45,7 +45,7 @@ func main() {
 		if inviteLink, err := b.GetInviteLink(m.Chat); err == nil {
 			linkmsg, _ := b.Reply(m, inviteLink)
 			go func(m *tb.Message) {
-				<-time.NewTimer(2 * time.Second).C
+				<-time.NewTimer(5 * time.Minute).C
 				b.Delete(m)
 			}(linkmsg)
 		} else {
