@@ -47,6 +47,13 @@ func main() {
 			} else {
 				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
 			}
+		} else {
+			switch err.(*tb.APIError) {
+			case tb.ErrUnauthorized:
+				b.Reply(m, "منم مثل تو دسترسی ندارم")
+			default:
+				b.Reply(m, "نمیشه که")
+			}
 		}
 	})
 
