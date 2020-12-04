@@ -44,10 +44,11 @@ func main() {
 	b.Handle("/invitelink", func(m *tb.Message) {
 		if inviteLink, err := b.GetInviteLink(m.Chat); err == nil {
 			linkmsg, _ := b.Reply(m, inviteLink)
-			go func(m *tb.Message) {
+			go func(m *tb.Message, lm *tb.Message) {
 				<-time.NewTimer(5 * time.Minute).C
 				b.Delete(m)
-			}(linkmsg)
+                                b.Delete(lm)
+			}(m, linkmsg)
 		} else {
 			if m.Chat.Type != tb.ChatGroup || m.Chat.Type == tb.ChatSuperGroup {
 				b.Reply(m, "اینجا گروه نی 😅️🤣️")
