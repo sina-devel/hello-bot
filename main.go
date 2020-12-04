@@ -51,7 +51,7 @@ func main() {
 			}(m, linkmsg)
 		} else {
 			if m.Chat.Type != tb.ChatGroup || m.Chat.Type == tb.ChatSuperGroup {
-				b.Reply(m, "اینجا گروه نی 😅️🤣️")
+				b.Reply(m, "اینجا گروه خصوصی نی 😅️🤣️")
 			} else {
 				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
 			}
