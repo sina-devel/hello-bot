@@ -49,7 +49,11 @@ func main() {
 				b.Delete(m)
 			}(linkmsg)
 		} else {
-			b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
+			if m.Chat.Type != tb.ChatGroup || m.Chat.Type == tb.ChatSuperGroup {
+				b.Reply(m, "اینجا گروه نی 😅️🤣️")
+			} else {
+				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
+			}
 		}
 	})
 
