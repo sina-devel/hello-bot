@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"time"
 
 	tb "gopkg.in/tucnak/telebot.v2"
 )
@@ -43,13 +43,13 @@ func main() {
 
 	b.Handle("/invitelink", func(m *tb.Message) {
 		if inviteLink, err := b.GetInviteLink(m.Chat); err == nil {
-			if inviteLink != "" {
-				b.Reply(m, m.Chat.InviteLink)
-			} else {
-				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
-			}
+			linkmsg, _ := b.Reply(m, inviteLink)
+			go func(m *tb.Message) {
+				<-time.NewTimer(2 * time.Second).C
+				b.Delete(m)
+			}(linkmsg)
 		} else {
-			b.Reply(m, fmt.Sprintf("%v", err))
+			b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
 		}
 	})
 
