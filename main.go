@@ -57,6 +57,10 @@ func main() {
 		}
 	})
 
+	b.Handle(tb.OnUserLeft, func(m *tb.Message) {
+		b.Reply(m, "بری دیگه برنگردی😏️")
+	})
+
 	b.Handle(tb.OnText, func(m *tb.Message) {
 		if m.Text == "اینو پین کن" {
 			if m.IsReply() {
