@@ -29,12 +29,37 @@ func main() {
 		log.Fatal(err)
 	}
 
-	b.Handle("/hello", func(m *tb.Message) {
-		b.Send(m.Sender, "Hi!")
+	b.SetCommands([]tb.Command{
+		{
+			Text:        "invitelink",
+			Description: "send group invitelink",
+		},
 	})
 
 	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
-		b.Reply(m, "سلام خوش اومدی عزیز")
+		b.Reply(m, "🙂️ سلام خوش اومدی عزیز")
+	})
+
+	b.Handle("/invitelink", func(m *tb.Message) {
+		if inviteLink, err := b.GetInviteLink(m.Chat); err == nil {
+			if inviteLink != "" {
+				b.Reply(m, m.Chat.InviteLink)
+			} else {
+				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
+			}
+		}
+	})
+
+	b.Handle(tb.OnText, func(m *tb.Message) {
+		if m.Text == "اینو پین کن" {
+			if m.IsReply() {
+				if err := b.Pin(m.ReplyTo); err != nil {
+					b.Reply(m, "نمیتونم پین کنم ☹️")
+				}
+			} else {
+				b.Reply(m, "چی رو پین کنم دقیقا 🤔️")
+			}
+		}
 	})
 
 	b.Start()
