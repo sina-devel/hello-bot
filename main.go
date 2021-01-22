@@ -35,6 +35,10 @@ func main() {
 			Text:        "invitelink",
 			Description: "send group invitelink",
 		},
+		{
+			Text:        "dice",
+			Description: "roll the dice",
+		},
 	})
 
 	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
@@ -47,7 +51,7 @@ func main() {
 			go func(m *tb.Message, lm *tb.Message) {
 				<-time.NewTimer(5 * time.Minute).C
 				b.Delete(m)
-                                b.Delete(lm)
+				b.Delete(lm)
 			}(m, linkmsg)
 		} else {
 			if m.Chat.Type != tb.ChatGroup || m.Chat.Type == tb.ChatSuperGroup {
@@ -56,6 +60,10 @@ func main() {
 				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
 			}
 		}
+	})
+
+	b.Handle("/dice", func(m *tb.Message) {
+		b.Reply(m, "🎲")
 	})
 
 	b.Handle(tb.OnUserLeft, func(m *tb.Message) {
