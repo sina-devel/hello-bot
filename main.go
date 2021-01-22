@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"time"
 
@@ -42,7 +44,15 @@ func main() {
 	})
 
 	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
-		b.Reply(m, "🙂️ سلام خوش اومدی عزیز")
+		if m.UserJoined.IsBot {
+			b.Reply(m, "Hello, you are a bot like me!🙃")
+			return
+		}
+		b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName))
+	})
+
+	b.Handle(tb.OnUserJoined, func(m *tb.Message) {
+		b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName))
 	})
 
 	b.Handle("/invitelink", func(m *tb.Message) {
@@ -55,29 +65,31 @@ func main() {
 			}(m, linkmsg)
 		} else {
 			if m.Chat.Type != tb.ChatGroup || m.Chat.Type == tb.ChatSuperGroup {
-				b.Reply(m, "اینجا گروه خصوصی نی 😅️🤣️")
+				b.Reply(m, "link 404 😅️🤣️")
 			} else {
-				b.Reply(m, "منم مثل تو نمیدونم 😅️🤣️")
+				b.Reply(m, "I don't know like you 😅️🤣️")
 			}
 		}
 	})
 
 	b.Handle("/dice", func(m *tb.Message) {
-		b.Reply(m, tb.Cube)
+		dices := []*tb.Dice{tb.Cube, tb.Dart, tb.Ball, tb.Goal, tb.Slot}
+		rnd := rand.New(rand.NewSource(time.Now().Unix()))
+		b.Reply(m, dices[rnd.Intn(len(dices))])
 	})
 
 	b.Handle(tb.OnUserLeft, func(m *tb.Message) {
-		b.Reply(m, "بری دیگه برنگردی😏️")
+		b.Reply(m, fmt.Sprintf("GoodBye %s", m.UserLeft.FirstName))
 	})
 
 	b.Handle(tb.OnText, func(m *tb.Message) {
-		if m.Text == "اینو پین کن" {
+		if m.Text == "pin it" {
 			if m.IsReply() {
 				if err := b.Pin(m.ReplyTo); err != nil {
-					b.Reply(m, "نمیتونم پین کنم ☹️")
+					b.Reply(m, "I can't ☹️")
 				}
 			} else {
-				b.Reply(m, "چی رو پین کنم دقیقا 🤔️")
+				b.Reply(m, "Are you ok? 🤔️")
 			}
 		}
 	})
