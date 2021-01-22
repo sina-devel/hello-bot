@@ -63,7 +63,7 @@ func main() {
 	})
 
 	b.Handle("/dice", func(m *tb.Message) {
-		b.Reply(m, "\xF0\x9F\x8E\xB2")
+		b.Reply(m, tb.Cube)
 	})
 
 	b.Handle(tb.OnUserLeft, func(m *tb.Message) {
