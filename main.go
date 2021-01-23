@@ -44,10 +44,6 @@ func main() {
 	})
 
 	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
-		if m.UserJoined.IsBot {
-			b.Reply(m, "Hello, you are a bot like me!🙃")
-			return
-		}
 		b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName))
 	})
 
@@ -90,6 +86,11 @@ func main() {
 				}
 			} else {
 				b.Reply(m, "Are you ok? 🤔️")
+			}
+		}
+		if m.Text == "unpin" {
+			if err := b.Unpin(m.Chat); err != nil {
+				b.Reply(m, "I can't ☹️")
 			}
 		}
 	})

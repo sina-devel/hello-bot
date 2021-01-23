@@ -1,9 +1,5 @@
-module sina/gobot
+module github.com/sina-devel/hello-bot
 
 go 1.15
 
-require (
-	github.com/davecgh/go-spew v1.1.1 // indirect
-	gopkg.in/tucnak/telebot.v2 v2.3.5
-	gopkg.in/yaml.v2 v2.2.8 // indirect
-)
+require gopkg.in/tucnak/telebot.v2 v2.3.5
