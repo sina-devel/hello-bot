@@ -69,7 +69,7 @@ func main() {
 	})
 
 	b.Handle("/dice", func(m *tb.Message) {
-		dices := []*tb.Dice{tb.Cube, tb.Dart, tb.Ball, tb.Goal}
+		dices := []*tb.Dice{tb.Cube, tb.Dart, tb.Ball, tb.Goal, tb.Slot}
 		rnd := rand.New(rand.NewSource(time.Now().Unix()))
 		b.Reply(m, dices[rnd.Intn(len(dices))])
 	})
