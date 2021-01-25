@@ -87,11 +87,7 @@ func main() {
 		if err != nil {
 			b.Reply(m, "R U OK?")
 		}
-		sb := &strings.Builder{}
-		for _, v := range res {
-			fmt.Fprintf(sb, "%s %s\n\n", v.Meta.Title, v.Extract)
-		}
-		b.Reply(m, fmt.Sprintf("%s", sb.String()))
+		b.Reply(m, fmt.Sprintf("%s\n%s", res[0].Meta.Title, res[0].Extract))
 	})
 
 	b.Handle("/wikisearch", func(m *tb.Message) {
@@ -99,7 +95,7 @@ func main() {
 		if err != nil {
 			b.Reply(m, "I can't 😶")
 		}
-		res, err := wiki.GetPrefixResults(m.Payload, 10)
+		res, err := wiki.GetPrefixResults(m.Payload, 15)
 		if err != nil {
 			b.Reply(m, "R U OK?")
 		}
