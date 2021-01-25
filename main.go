@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"time"
+        "strings"
 
 	gt "github.com/sina-devel/hello-bot/translategooglefree"
 	tb "gopkg.in/tucnak/telebot.v2"
@@ -74,7 +75,8 @@ func main() {
 	})
 
 	b.Handle("/tofa", func(m *tb.Message) {
-		result, err := gt.Translate(m.Payload, "auto", "fa")
+                text := strings.ReplaceAll(m.Text, "/tofa", "")
+		result, err := gt.Translate(text, "auto", "fa")
 		if err != nil {
 			b.Reply(m, "error 😰")
 			return
