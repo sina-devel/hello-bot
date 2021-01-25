@@ -5,10 +5,9 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"strings"
 	"time"
 
-	"github.com/sina-devel/hello-bot/wikiclient"
+	gt "github.com/sina-devel/hello-bot/translategooglefree"
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
@@ -44,12 +43,8 @@ func main() {
 			Description: "roll the dice",
 		},
 		{
-			Text:        "wikisearch",
-			Description: "search on wiki",
-		},
-		{
-			Text:        "wiki",
-			Description: "show wiki",
+			Text:        "tofa",
+			Description: "translation text to persian",
 		},
 	})
 
@@ -78,33 +73,13 @@ func main() {
 		}
 	})
 
-	b.Handle("/wiki", func(m *tb.Message) {
-		wiki, err := wikiclient.NewWikipediaClient()
+	b.Handle("/tofa", func(m *tb.Message) {
+		result, err := gt.Translate(m.Payload, "auto", "fa")
 		if err != nil {
-			b.Reply(m, "I can't 😶")
+			b.Reply(m, "error 😰")
+			return
 		}
-		res, err := wiki.GetExtracts([]string{m.Payload})
-		if err != nil {
-			b.Reply(m, "R U OK?")
-		}
-		b.Reply(m, fmt.Sprintf("%s\n%s", res[0].Meta.Title, res[0].Extract))
-	})
-
-	b.Handle("/wikisearch", func(m *tb.Message) {
-		wiki, err := wikiclient.NewWikipediaClient()
-		if err != nil {
-			b.Reply(m, "I can't 😶")
-		}
-		res, err := wiki.GetPrefixResults(m.Payload, 15)
-		if err != nil {
-			b.Reply(m, "R U OK?")
-		}
-		sb := &strings.Builder{}
-		for i, v := range res {
-			fmt.Fprintf(sb, "%d %s\n", i, v.Title)
-		}
-		b.Reply(m, fmt.Sprintf("%s", sb.String()))
-
+		b.Reply(m, result)
 	})
 
 	b.Handle("/dice", func(m *tb.Message) {
