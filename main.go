@@ -79,7 +79,7 @@ func main() {
 	})
 
 	b.Handle("/tofa", func(m *tb.Message) {
-                pat := regexp.MustCompile(`/tofa(@gotelegram_bot)+`)
+                pat := regexp.MustCompile(`^(/tofa)(@gotelegram_bot)+`)
                 text := pat.ReplaceAllString(m.Text, "")
 		result, err := gt.Translate(text, "auto", "fa")
 		if err != nil {
@@ -90,7 +90,7 @@ func main() {
 	})
 
 	b.Handle("/toen", func(m *tb.Message) {
-                pat := regexp.MustCompile(`/toen(@gotelegram_bot)+`)
+                pat := regexp.MustCompile(`^(/toen)(@gotelegram_bot)+`)
                 text := pat.ReplaceAllString(m.Text, "")
                 result, err := gt.Translate(text, "auto", "en")
 		if err != nil {
