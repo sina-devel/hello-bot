@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"time"
-        "strings"
+        "regexp"
 
 	gt "github.com/sina-devel/hello-bot/translategooglefree"
 	tb "gopkg.in/tucnak/telebot.v2"
@@ -47,6 +47,10 @@ func main() {
 			Text:        "tofa",
 			Description: "translation text to persian",
 		},
+		{
+			Text:        "toen",
+			Description: "translation text to english",
+		},
 	})
 
 	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
@@ -75,7 +79,8 @@ func main() {
 	})
 
 	b.Handle("/tofa", func(m *tb.Message) {
-                text := strings.ReplaceAll(m.Text, "/tofa", "")
+                pat := regexp.MustCompile(`/tofa(@gotelegram_bot)+`)
+                text := pat.ReplaceAllString(m.Text, "")
 		result, err := gt.Translate(text, "auto", "fa")
 		if err != nil {
 			b.Reply(m, "error 😰")
@@ -84,6 +89,16 @@ func main() {
 		b.Reply(m, result)
 	})
 
+	b.Handle("/toen", func(m *tb.Message) {
+                pat := regexp.MustCompile(`/toen(@gotelegram_bot)+`)
+                text := pat.ReplaceAllString(m.Text, "")
+                result, err := gt.Translate(text, "auto", "en")
+		if err != nil {
+			b.Reply(m, "error 😰")
+			return
+		}
+		b.Reply(m, result)
+	})
 	b.Handle("/dice", func(m *tb.Message) {
 		dices := []*tb.Dice{tb.Cube, tb.Dart, tb.Ball, tb.Goal, tb.Slot}
 		rnd := rand.New(rand.NewSource(time.Now().Unix()))
