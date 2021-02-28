@@ -90,7 +90,7 @@ func main() {
 	})
 
 	b.Handle("/toen", func(m *tb.Message) {
-                pat := regexp.MustCompile(`^/tofa(@gotelegeam_bot){0,1}(.*)`)
+                pat := regexp.MustCompile(`^/toen(@gotelegeam_bot){0,1}(.*)`)
                 text := pat.ReplaceAllString(m.Text, "$2")
                 result, err := gt.Translate(text, "auto", "en")
 		if err != nil {
