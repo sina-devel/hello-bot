@@ -83,7 +83,7 @@ func main() {
                 text := pat.ReplaceAllString(m.Text, "$2")
 		result, err := gt.Translate(text, "auto", "fa")
 		if err != nil {
-			b.Reply(m, "error 😰")
+			b.Reply(m, err.Error())
 			return
 		}
 		b.Reply(m, result)
@@ -94,7 +94,7 @@ func main() {
                 text := pat.ReplaceAllString(m.Text, "$2")
                 result, err := gt.Translate(text, "auto", "en")
 		if err != nil {
-			b.Reply(m, "error 😰")
+			b.Reply(m, err.Error())
 			return
 		}
 		b.Reply(m, result)
