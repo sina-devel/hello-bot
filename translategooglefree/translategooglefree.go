@@ -12,25 +12,25 @@ import (
 )
 
 // javascript "encodeURI()"
-// so we embed js to our golang programm
+// so we embed js to our golang program
 func encodeURI(s string) (string, error) {
 	eUri := `eUri = encodeURI(sourceText);`
 	vm := otto.New()
 	err := vm.Set("sourceText", s)
 	if err != nil {
-		return "err", errors.New("Error setting js variable")
+		return "err", errors.New("error setting js variable")
 	}
 	_, err = vm.Run(eUri)
 	if err != nil {
-		return "err", errors.New("Error executing jscript")
+		return "err", errors.New("error executing jscript")
 	}
 	val, err := vm.Get("eUri")
 	if err != nil {
-		return "err", errors.New("Error getting variable value from js")
+		return "err", errors.New("error getting variable value from js")
 	}
 	v, err := val.ToString()
 	if err != nil {
-		return "err", errors.New("Error converting js var to string")
+		return "err", errors.New("error converting js var to string")
 	}
 	return v, nil
 }
@@ -48,23 +48,23 @@ func Translate(source, sourceLang, targetLang string) (string, error) {
 
 	r, err := http.Get(url)
 	if err != nil {
-		return "err", errors.New("Error getting translate.googleapis.com")
+		return "err", errors.New("error getting translate.googleapis.com")
 	}
 	defer r.Body.Close()
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return "err", errors.New("Error reading response body")
+		return "err", errors.New("error reading response body")
 	}
 
 	bReq := strings.Contains(string(body), `<title>Error 400 (Bad Request)`)
 	if bReq {
-		return "err", errors.New("Error 400 (Bad Request)")
+		return "err", errors.New("error 400 (Bad Request)")
 	}
 
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		return "err", errors.New("Error unmarshaling data")
+		return "err", errors.New("error unmarshalling data")
 	}
 
 	if len(result) > 0 {
@@ -79,6 +79,6 @@ func Translate(source, sourceLang, targetLang string) (string, error) {
 
 		return cText, nil
 	} else {
-		return "err", errors.New("No translated data in responce")
+		return "err", errors.New("no translated data in response")
 	}
 }

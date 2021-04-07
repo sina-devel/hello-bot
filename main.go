@@ -5,8 +5,8 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"regexp"
 	"time"
-        "regexp"
 
 	gt "github.com/sina-devel/hello-bot/translategooglefree"
 	tb "gopkg.in/tucnak/telebot.v2"
@@ -34,94 +34,128 @@ func main() {
 		log.Fatal(err)
 	}
 
-	b.SetCommands([]tb.Command{
+	if err := b.SetCommands([]tb.Command{
 		{
-			Text:        "invitelink",
-			Description: "send group invitelink",
+			Text:        "inviteLink",
+			Description: "send group inviteLink",
 		},
 		{
 			Text:        "dice",
 			Description: "roll the dice",
 		},
 		{
-			Text:        "tofa",
+			Text:        "toFA",
 			Description: "translation text to persian",
 		},
 		{
-			Text:        "toen",
+			Text:        "toEN",
 			Description: "translation text to english",
 		},
-	})
+	}); err != nil {
+		log.Fatalln(err)
+	}
 
 	b.Handle(tb.OnAddedToGroup, func(m *tb.Message) {
-		b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName))
+		if _, err := b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName)); err != nil {
+			log.Println(err)
+		}
 	})
 
 	b.Handle(tb.OnUserJoined, func(m *tb.Message) {
-		b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName))
+		if _, err := b.Reply(m, fmt.Sprintf("Hello %s %s 🖐️", m.UserJoined.FirstName, m.UserJoined.LastName)); err != nil {
+			log.Println(err)
+		}
 	})
 
-	b.Handle("/invitelink", func(m *tb.Message) {
+	b.Handle(tb.OnDice, func(m *tb.Message) {
+		if _, err := b.Reply(m, fmt.Sprintf("value of Dice: %d", m.Dice.Value)); err != nil {
+			log.Println(err)
+		}
+	})
+
+	b.Handle("/inviteLink", func(m *tb.Message) {
 		if inviteLink, err := b.GetInviteLink(m.Chat); err == nil {
-			linkmsg, _ := b.Reply(m, inviteLink)
+			lm, _ := b.Reply(m, inviteLink)
 			go func(m *tb.Message, lm *tb.Message) {
 				<-time.NewTimer(5 * time.Minute).C
-				b.Delete(m)
-				b.Delete(lm)
-			}(m, linkmsg)
+				_ = b.Delete(m)
+				_ = b.Delete(lm)
+			}(m, lm)
 		} else {
-			if m.Chat.Type != tb.ChatGroup || m.Chat.Type == tb.ChatSuperGroup {
-				b.Reply(m, "link 404 😅️🤣️")
+			if m.Chat.Type != tb.ChatGroup {
+				if _, err := b.Reply(m, "link 404 😅️🤣️"); err != nil {
+					log.Println(err)
+				}
 			} else {
-				b.Reply(m, "I don't know like you 😅️🤣️")
+				if _, err := b.Reply(m, "I don't know like you 😅️🤣️"); err != nil {
+					log.Println(err)
+				}
 			}
 		}
 	})
 
-	b.Handle("/tofa", func(m *tb.Message) {
-                pat := regexp.MustCompile(`^/tofa(@gotelegeam_bot){0,1}(.*)`)
-                text := pat.ReplaceAllString(m.Text, "$2")
+	b.Handle("/toFA", func(m *tb.Message) {
+		pat := regexp.MustCompile(`^/toFA(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
+		text := pat.ReplaceAllString(m.Text, "$2")
 		result, err := gt.Translate(text, "auto", "fa")
 		if err != nil {
-			b.Reply(m, err.Error())
+			if _, err := b.Reply(m, err.Error()); err != nil {
+				log.Println(err)
+			}
 			return
 		}
-		b.Reply(m, result)
+		if _, err := b.Reply(m, result); err != nil {
+			log.Println(err)
+		}
 	})
 
-	b.Handle("/toen", func(m *tb.Message) {
-                pat := regexp.MustCompile(`^/toen(@gotelegeam_bot){0,1}(.*)`)
-                text := pat.ReplaceAllString(m.Text, "$2")
-                result, err := gt.Translate(text, "auto", "en")
+	b.Handle("/toEN", func(m *tb.Message) {
+		pat := regexp.MustCompile(`^/toEN(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
+		text := pat.ReplaceAllString(m.Text, "$2")
+		result, err := gt.Translate(text, "auto", "en")
 		if err != nil {
-			b.Reply(m, err.Error())
+			if _, err := b.Reply(m, err.Error()); err != nil {
+				log.Println(err)
+			}
 			return
 		}
-		b.Reply(m, result)
+		if _, err := b.Reply(m, result); err != nil {
+			log.Println(err)
+		}
 	})
 	b.Handle("/dice", func(m *tb.Message) {
 		dices := []*tb.Dice{tb.Cube, tb.Dart, tb.Ball, tb.Goal, tb.Slot}
 		rnd := rand.New(rand.NewSource(time.Now().Unix()))
-		b.Reply(m, dices[rnd.Intn(len(dices))])
+		if _, err := b.Reply(m, dices[rnd.Intn(len(dices))]); err != nil {
+			log.Println(err)
+		}
 	})
 
 	b.Handle(tb.OnUserLeft, func(m *tb.Message) {
-		b.Reply(m, fmt.Sprintf("GoodBye %s", m.UserLeft.FirstName))
+		if _, err := b.Reply(m, fmt.Sprintf("GoodBye %s", m.UserLeft.FirstName)); err != nil {
+			log.Println(err)
+		}
 	})
 
 	b.Handle(tb.OnText, func(m *tb.Message) {
 		if m.Text == "pin it" {
 			if m.IsReply() {
 				if err := b.Pin(m.ReplyTo); err != nil {
-					b.Reply(m, "I can't ☹️")
+					if _, err := b.Reply(m, "I can't ☹️"); err != nil {
+						log.Println(err)
+					}
 				}
 			} else {
-				b.Reply(m, "Are you ok? 🤔️")
+				if _, err := b.Reply(m, "Are you ok? 🤔️"); err != nil {
+					log.Println(err)
+				}
 			}
 		}
 		if m.Text == "unpin" {
 			if err := b.Unpin(m.Chat); err != nil {
-				b.Reply(m, "I can't ☹️")
+				if _, err := b.Reply(m, "I can't ☹️"); err != nil {
+					log.Println(err)
+				}
 			}
 		}
 	})
