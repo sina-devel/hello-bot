@@ -29,7 +29,7 @@ func main() {
 
 	if err := b.SetCommands([]tb.Command{
 		{
-			Text:        "inviteLink",
+			Text:        "invite_link",
 			Description: "send group inviteLink",
 		},
 		{
@@ -37,11 +37,11 @@ func main() {
 			Description: "roll the dice",
 		},
 		{
-			Text:        "toFA",
+			Text:        "fa",
 			Description: "translation text to persian",
 		},
 		{
-			Text:        "toEN",
+			Text:        "en",
 			Description: "translation text to english",
 		},
 	}); err != nil {
@@ -66,7 +66,7 @@ func main() {
 		}
 	})
 
-	b.Handle("/inviteLink", func(m *tb.Message) {
+	b.Handle("/invite_link", func(m *tb.Message) {
 		if inviteLink, err := b.GetInviteLink(m.Chat); err == nil {
 			lm, _ := b.Reply(m, inviteLink)
 			go func(m *tb.Message, lm *tb.Message) {
@@ -87,8 +87,8 @@ func main() {
 		}
 	})
 
-	b.Handle("/toFA", func(m *tb.Message) {
-		pat := regexp.MustCompile(`^/toFA(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
+	b.Handle("/fa", func(m *tb.Message) {
+		pat := regexp.MustCompile(`^/fa(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
 		text := pat.ReplaceAllString(m.Text, "$2")
 		result, err := gt.Translate(text, "auto", "fa")
 		if err != nil {
@@ -102,8 +102,8 @@ func main() {
 		}
 	})
 
-	b.Handle("/toEN", func(m *tb.Message) {
-		pat := regexp.MustCompile(`^/toEN(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
+	b.Handle("/en", func(m *tb.Message) {
+		pat := regexp.MustCompile(`^/en(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
 		text := pat.ReplaceAllString(m.Text, "$2")
 		result, err := gt.Translate(text, "auto", "en")
 		if err != nil {
