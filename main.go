@@ -14,9 +14,10 @@ import (
 
 func main() {
 	var (
-		token = os.Getenv("TOKEN")
+		token     = os.Getenv("TOKEN")
 		publicURL = os.Getenv("PUBLIC_URL")
-		port = os.Getenv("PORT")
+		port      = os.Getenv("PORT")
+		cmdRx     = regexp.MustCompile(`^(/\w+)(@(\w+))?(\s|$)([\w\s]+)?`)
 	)
 
 	pref := tb.Settings{
@@ -135,9 +136,7 @@ func main() {
 	})
 
 	b.Handle("/fa", func(m *tb.Message) {
-		pat := regexp.MustCompile(`^/fa(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
-		text := pat.ReplaceAllString(m.Text, "$2")
-		result, err := gt.Translate(text, "auto", "fa")
+		result, err := gt.Translate(cmdRx.FindAllStringSubmatch(m.Text, -1)[0][5], "auto", "fa")
 		if err != nil {
 			if _, err := b.Reply(m, err.Error()); err != nil {
 				log.Println(err)
@@ -150,9 +149,7 @@ func main() {
 	})
 
 	b.Handle("/en", func(m *tb.Message) {
-		pat := regexp.MustCompile(`^/en(@[a-zA-Z0-9_]*)?[\s]*(.*)`)
-		text := pat.ReplaceAllString(m.Text, "$2")
-		result, err := gt.Translate(text, "auto", "en")
+		result, err := gt.Translate(cmdRx.FindAllStringSubmatch(m.Text, -1)[0][5], "auto", "en")
 		if err != nil {
 			if _, err := b.Reply(m, err.Error()); err != nil {
 				log.Println(err)
@@ -164,7 +161,7 @@ func main() {
 		}
 	})
 	b.Handle("/dice", func(m *tb.Message) {
-		dices := []*tb.Dice{{Type: "🎲"}, {Type: "🎯"}, {Type: "🎳"}, {Type: "⚽"}, {Type: "🎰"}, {Type: "🏀"}}
+		dices := []*tb.Dice{tb.Ball, tb.Goal, tb.Slot, tb.Dart, tb.Cube, {Type: "🎳"}}
 		rnd := rand.New(rand.NewSource(time.Now().Unix()))
 		if _, err := b.Reply(m, dices[rnd.Intn(len(dices))]); err != nil {
 			log.Println(err)
@@ -177,25 +174,24 @@ func main() {
 		}
 	})
 
-	b.Handle(tb.OnText, func(m *tb.Message) {
-		if m.Text == "pin it" {
-			if m.IsReply() {
-				if err := b.Pin(m.ReplyTo); err != nil {
-					if _, err := b.Reply(m, "I can't ☹️"); err != nil {
-						log.Println(err)
-					}
-				}
-			} else {
-				if _, err := b.Reply(m, "Are you ok? 🤔️"); err != nil {
-					log.Println(err)
-				}
-			}
-		}
-		if m.Text == "unpin" {
-			if err := b.Unpin(m.Chat); err != nil {
+	b.Handle("pin it", func(m *tb.Message) {
+		if m.IsReply() {
+			if err := b.Pin(m.ReplyTo); err != nil {
 				if _, err := b.Reply(m, "I can't ☹️"); err != nil {
 					log.Println(err)
 				}
+			}
+		} else {
+			if _, err := b.Reply(m, "Are you ok? 🤔️"); err != nil {
+				log.Println(err)
+			}
+		}
+	})
+
+	b.Handle("unpin", func(m *tb.Message) {
+		if err := b.Unpin(m.Chat); err != nil {
+			if _, err := b.Reply(m, "I can't ☹️"); err != nil {
+				log.Println(err)
 			}
 		}
 	})
