@@ -18,19 +18,19 @@ func encodeURI(s string) (string, error) {
 	vm := otto.New()
 	err := vm.Set("sourceText", s)
 	if err != nil {
-		return "err", errors.New("error setting js variable")
+		return "", errors.New("error setting js variable")
 	}
 	_, err = vm.Run(eUri)
 	if err != nil {
-		return "err", errors.New("error executing jscript")
+		return "", errors.New("error executing jscript")
 	}
 	val, err := vm.Get("eUri")
 	if err != nil {
-		return "err", errors.New("error getting variable value from js")
+		return "", errors.New("error getting variable value from js")
 	}
 	v, err := val.ToString()
 	if err != nil {
-		return "err", errors.New("error converting js var to string")
+		return "", errors.New("error converting js var to string")
 	}
 	return v, nil
 }
@@ -41,30 +41,30 @@ func Translate(source, sourceLang, targetLang string) (string, error) {
 
 	encodedSource, err := encodeURI(source)
 	if err != nil {
-		return "err", err
+		return "", err
 	}
 	url := "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
 		sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodedSource
 
 	r, err := http.Get(url)
 	if err != nil {
-		return "err", errors.New("error getting translate.googleapis.com")
+		return "", errors.New("error getting translate.googleapis.com")
 	}
 	defer r.Body.Close()
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return "err", errors.New("error reading response body")
+		return "", errors.New("error reading response body")
 	}
 
 	bReq := strings.Contains(string(body), `<title>Error 400 (Bad Request)`)
 	if bReq {
-		return "err", errors.New("error 400 (Bad Request)")
+		return "", errors.New("error 400 (Bad Request)")
 	}
 
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		return "err", errors.New("error unmarshalling data")
+		return "", errors.New("error unmarshalling data")
 	}
 
 	if len(result) > 0 {
@@ -79,6 +79,6 @@ func Translate(source, sourceLang, targetLang string) (string, error) {
 
 		return cText, nil
 	} else {
-		return "err", errors.New("no translated data in response")
+		return "", errors.New("no translated data in response")
 	}
 }

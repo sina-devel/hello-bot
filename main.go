@@ -16,7 +16,7 @@ func main() {
 	token := os.Getenv("TOKEN")
 
 	pref := tb.Settings{
-		Token:  token,
+		Token: token,
 		Poller: &tb.LongPoller{
 			Timeout: 10 * time.Second,
 		},
@@ -61,6 +61,45 @@ func main() {
 	})
 
 	b.Handle(tb.OnDice, func(m *tb.Message) {
+		success := "oh my god, you are very lucky"
+		failure := "I have not seen anyone more unlucky than you 🤣"
+		switch m.Dice.Type {
+		case tb.Cube.Type:
+			switch m.Dice.Value {
+			case 6:
+				_, _ = b.Reply(m, success)
+			default:
+				_, _ = b.Reply(m, failure)
+			}
+		case tb.Ball.Type, tb.Goal.Type:
+			switch m.Dice.Value {
+			case 4, 5:
+				_, _ = b.Reply(m, success)
+			default:
+				_, _ = b.Reply(m, failure)
+			}
+		case tb.Dart.Type:
+			switch m.Dice.Value {
+			case 6:
+				_, _ = b.Reply(m, success)
+			default:
+				_, _ = b.Reply(m, failure)
+			}
+		case tb.Slot.Type:
+			switch m.Dice.Value {
+			case 64:
+				_, _ = b.Reply(m, success)
+			default:
+				_, _ = b.Reply(m, failure)
+			}
+		case "🎳":
+			switch m.Dice.Value {
+			case 6:
+				_, _ = b.Reply(m, success)
+			default:
+				_, _ = b.Reply(m, failure)
+			}
+		}
 		if _, err := b.Reply(m, fmt.Sprintf("value of Dice: %d", m.Dice.Value)); err != nil {
 			log.Println(err)
 		}
@@ -117,7 +156,7 @@ func main() {
 		}
 	})
 	b.Handle("/dice", func(m *tb.Message) {
-		dices := []*tb.Dice{tb.Cube, tb.Dart, tb.Ball, tb.Goal, tb.Slot}
+		dices := []*tb.Dice{{Type: "🎲"}, {Type: "🎯"}, {Type: "🎳"}, {Type: "⚽"}, {Type: "🎰"}, {Type: "🏀"}}
 		rnd := rand.New(rand.NewSource(time.Now().Unix()))
 		if _, err := b.Reply(m, dices[rnd.Intn(len(dices))]); err != nil {
 			log.Println(err)
