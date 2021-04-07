@@ -63,6 +63,7 @@ func main() {
 	b.Handle(tb.OnDice, func(m *tb.Message) {
 		success := "oh my god, you are very lucky"
 		failure := "I have not seen anyone more unlucky than you 🤣"
+		time.Sleep(2 * time.Second)
 		switch m.Dice.Type {
 		case tb.Cube.Type:
 			switch m.Dice.Value {
