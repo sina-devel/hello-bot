@@ -13,12 +13,19 @@ import (
 )
 
 func main() {
-	token := os.Getenv("TOKEN")
+	var (
+		token = os.Getenv("TOKEN")
+		publicURL = os.Getenv("PUBLIC_URL")
+		port = os.Getenv("PORT")
+	)
 
 	pref := tb.Settings{
 		Token: token,
-		Poller: &tb.LongPoller{
-			Timeout: 10 * time.Second,
+		Poller: &tb.Webhook{
+			Listen: ":" + port,
+			Endpoint: &tb.WebhookEndpoint{
+				PublicURL: publicURL,
+			},
 		},
 	}
 
