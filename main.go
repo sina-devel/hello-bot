@@ -17,7 +17,7 @@ func main() {
 		token     = os.Getenv("TOKEN")
 		publicURL = os.Getenv("PUBLIC_URL")
 		port      = os.Getenv("PORT")
-		cmdRx     = regexp.MustCompile(`^(/\w+)(@(\w+))?(\s|$)([\w\s]+)?`)
+		cmdRx     = regexp.MustCompile(`^(/\w+)(@(\w+))?(\s|$)(?s)(.+)?`)
 	)
 
 	pref := tb.Settings{
@@ -136,7 +136,7 @@ func main() {
 	})
 
 	b.Handle("/fa", func(m *tb.Message) {
-		result, err := gt.Translate(cmdRx.FindAllStringSubmatch(m.Text, -1)[0][5], "auto", "fa")
+		result, err := gt.Translate(cmdRx.FindStringSubmatch(m.Text)[5], "auto", "fa")
 		if err != nil {
 			if _, err := b.Reply(m, err.Error()); err != nil {
 				log.Println(err)
@@ -149,7 +149,7 @@ func main() {
 	})
 
 	b.Handle("/en", func(m *tb.Message) {
-		result, err := gt.Translate(cmdRx.FindAllStringSubmatch(m.Text, -1)[0][5], "auto", "en")
+		result, err := gt.Translate(cmdRx.FindStringSubmatch(m.Text)[5], "auto", "en")
 		if err != nil {
 			if _, err := b.Reply(m, err.Error()); err != nil {
 				log.Println(err)
