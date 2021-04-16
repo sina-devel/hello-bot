@@ -153,7 +153,7 @@ func main() {
 			text.WriteString(sentence.Trans)
 		}
 
-		if _, err := b.Reply(m, result, fmt.Sprintf("from %s to fa\n%s", result.Src, text.String())); err != nil {
+		if _, err := b.Reply(m, fmt.Sprintf("from %s to fa\n%s", result.Src, text.String())); err != nil {
 			log.Println(err)
 		}
 	})
