@@ -215,12 +215,6 @@ func main() {
 	})
 
 	b.Handle("unpin", func(m *tb.Message) {
-		if m.PinnedMessage.Sender.ID != m.Sender.ID {
-			_, err := b.Reply(m, "Only message sender can unpin message")
-			if err != nil {
-				log.Println(err)
-			}
-		}
 		if err := b.Unpin(m.Chat); err != nil {
 			if _, err := b.Reply(m, "I can't ☹️"); err != nil {
 				log.Println(err)
