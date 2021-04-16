@@ -139,7 +139,7 @@ func main() {
 	b.Handle("/fa", func(m *tb.Message) {
 		input := cmdRx.FindStringSubmatch(m.Text)[5]
 		if m.IsReply() && input == "" {
-			input = m.Text
+			input = m.ReplyTo.Text
 		}
 		result, err := gt.Translate(input, "auto", "fa")
 		if err != nil {
@@ -161,7 +161,7 @@ func main() {
 	b.Handle("/en", func(m *tb.Message) {
 		input := cmdRx.FindStringSubmatch(m.Text)[5]
 		if m.IsReply() && input == "" {
-			input = m.Text
+			input = m.ReplyTo.Text
 		}
 		result, err := gt.Translate(input, "auto", "en")
 		if err != nil {
