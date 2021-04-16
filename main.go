@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 
 	gt "github.com/sina-devel/hello-bot/translategooglefree"
@@ -136,30 +137,49 @@ func main() {
 	})
 
 	b.Handle("/fa", func(m *tb.Message) {
-		result, err := gt.Translate(cmdRx.FindStringSubmatch(m.Text)[5], "auto", "fa")
+		input := cmdRx.FindStringSubmatch(m.Text)[5]
+		if m.IsReply() && input == "" {
+			input = m.Text
+		}
+		result, err := gt.Translate(input, "auto", "fa")
 		if err != nil {
 			if _, err := b.Reply(m, err.Error()); err != nil {
 				log.Println(err)
 			}
 			return
 		}
-		if _, err := b.Reply(m, result); err != nil {
+		text := strings.Builder{}
+		for _, sentence := range result.Sentences {
+			text.WriteString(sentence.Trans)
+		}
+
+		if _, err := b.Reply(m, result, fmt.Sprintf("from %s to fa\n%s", result.Src, text.String())); err != nil {
 			log.Println(err)
 		}
 	})
 
 	b.Handle("/en", func(m *tb.Message) {
-		result, err := gt.Translate(cmdRx.FindStringSubmatch(m.Text)[5], "auto", "en")
+		input := cmdRx.FindStringSubmatch(m.Text)[5]
+		if m.IsReply() && input == "" {
+			input = m.Text
+		}
+		result, err := gt.Translate(input, "auto", "en")
 		if err != nil {
 			if _, err := b.Reply(m, err.Error()); err != nil {
 				log.Println(err)
 			}
 			return
 		}
-		if _, err := b.Reply(m, result); err != nil {
+		text := strings.Builder{}
+		for _, sentence := range result.Sentences {
+			text.WriteString(sentence.Trans)
+		}
+
+		if _, err := b.Reply(m, fmt.Sprintf("from %s to en\n%s", result.Src, text.String())); err != nil {
 			log.Println(err)
 		}
 	})
+
 	b.Handle("/dice", func(m *tb.Message) {
 		dices := []*tb.Dice{tb.Ball, tb.Goal, tb.Slot, tb.Dart, tb.Cube, {Type: "🎳"}}
 		rnd := rand.New(rand.NewSource(time.Now().Unix()))

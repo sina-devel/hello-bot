@@ -3,82 +3,51 @@ package translategooglefree
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"net/http"
-	"strings"
-
-	"github.com/robertkrimen/otto"
 )
 
-// javascript "encodeURI()"
-// so we embed js to our golang program
-func encodeURI(s string) (string, error) {
-	eUri := `eUri = encodeURI(sourceText);`
-	vm := otto.New()
-	err := vm.Set("sourceText", s)
-	if err != nil {
-		return "", errors.New("error setting js variable")
-	}
-	_, err = vm.Run(eUri)
-	if err != nil {
-		return "", errors.New("error executing jscript")
-	}
-	val, err := vm.Get("eUri")
-	if err != nil {
-		return "", errors.New("error getting variable value from js")
-	}
-	v, err := val.ToString()
-	if err != nil {
-		return "", errors.New("error converting js var to string")
-	}
-	return v, nil
+type Result struct {
+	Sentences []struct {
+		Trans   string `json:"trans"`
+		Orig    string `json:"orig"`
+		Backend int    `json:"backend"`
+	} `json:"sentences"`
+	Src        string  `json:"src"`
+	Confidence float64 `json:"confidence"`
+	Spell      struct {
+	} `json:"spell"`
+	LdResult struct {
+		Srclangs            []string  `json:"srclangs"`
+		SrclangsConfidences []float64 `json:"srclangs_confidences"`
+		ExtendedSrclangs    []string  `json:"extended_srclangs"`
+	} `json:"ld_result"`
 }
 
-func Translate(source, sourceLang, targetLang string) (string, error) {
-	var text []string
-	var result []interface{}
+func Translate(source, sourceLang, targetLang string) (*Result, error) {
+	var result Result
 
-	encodedSource, err := encodeURI(source)
+
+	req, err := http.NewRequest("GET","https://translate.google.com/translate_a/single?client=at&dt=t&dt=ld&dt=qca&dt=rm&dt=bd&dj=1&hl=es-ES&ie=UTF-8&oe=UTF-8&inputm=2&otf=2&iid=1dd3b944-fa62-4b55-b330-74909a99969e&dt=t", nil)
 	if err != nil {
-		return "", err
+		return nil, errors.New("can't make request")
 	}
-	url := "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
-		sourceLang + "&tl=" + targetLang + "&dt=t&q=" + encodedSource
 
-	r, err := http.Get(url)
+	fields := req.URL.Query()
+	fields.Set("sl", sourceLang)
+	fields.Set("tl", targetLang)
+	fields.Set("q", source)
+
+	req.URL.RawQuery = fields.Encode()
+
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "", errors.New("error getting translate.googleapis.com")
+		return nil, errors.New("can't connect to translate.googleapis.com")
 	}
-	defer r.Body.Close()
+	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return "", errors.New("error reading response body")
-	}
-
-	bReq := strings.Contains(string(body), `<title>Error 400 (Bad Request)`)
-	if bReq {
-		return "", errors.New("error 400 (Bad Request)")
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return nil, errors.New("error unmarshalling data")
 	}
 
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		return "", errors.New("error unmarshalling data")
-	}
-
-	if len(result) > 0 {
-		inner := result[0]
-		for _, slice := range inner.([]interface{}) {
-			for _, translatedText := range slice.([]interface{}) {
-				text = append(text, fmt.Sprintf("%v", translatedText))
-				break
-			}
-		}
-		cText := strings.Join(text, "")
-
-		return cText, nil
-	} else {
-		return "", errors.New("no translated data in response")
-	}
+	return &result, nil
 }
