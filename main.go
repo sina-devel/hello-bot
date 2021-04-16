@@ -81,9 +81,16 @@ func main() {
 			default:
 				_, _ = b.Reply(m, failure)
 			}
-		case tb.Ball.Type, tb.Goal.Type:
+		case tb.Ball.Type:
 			switch m.Dice.Value {
 			case 4, 5:
+				_, _ = b.Reply(m, success)
+			default:
+				_, _ = b.Reply(m, failure)
+			}
+		case tb.Goal.Type:
+			switch m.Dice.Value {
+			case 3, 4, 5:
 				_, _ = b.Reply(m, success)
 			default:
 				_, _ = b.Reply(m, failure)
