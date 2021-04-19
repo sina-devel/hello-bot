@@ -60,7 +60,7 @@ func main() {
 	b.Handle("/fa", botActions.FaTranslatorHandler)
 	b.Handle("/en", botActions.EnTranslatorHandler)
 	b.Handle("/dice", botActions.DiceHandler)
-	b.Handle("pin it", botActions.UnpinHandler)
+	b.Handle("pin it", botActions.PinHandler)
 	b.Handle("unpin", botActions.UnpinHandler)
 
 	b.Start()
