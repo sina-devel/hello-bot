@@ -7,13 +7,13 @@ import (
 	"os"
 )
 
-func main() {
-	var (
-		token     = os.Getenv("TOKEN")
-		publicURL = os.Getenv("PUBLIC_URL")
-		port      = os.Getenv("PORT")
-	)
+var (
+	token     = os.Getenv("TOKEN")
+	publicURL = os.Getenv("PUBLIC_URL")
+	port      = os.Getenv("PORT")
+)
 
+func main() {
 	pref := tb.Settings{
 		Token: token,
 		Poller: &tb.Webhook{
@@ -55,11 +55,11 @@ func main() {
 	b.Handle(tb.OnAddedToGroup, botActions.OnUserJoinedHandler)
 	b.Handle(tb.OnUserJoined, botActions.OnUserJoinedHandler)
 	b.Handle(tb.OnDice, botActions.OnDiceHandler)
+	b.Handle(tb.OnUserLeft, botActions.OnUserLeftHandler)
 	b.Handle("/invite_link", botActions.InviteLinkHandler)
 	b.Handle("/fa", botActions.FaTranslatorHandler)
 	b.Handle("/en", botActions.EnTranslatorHandler)
 	b.Handle("/dice", botActions.DiceHandler)
-	b.Handle(tb.OnUserLeft, botActions.OnUserLeftHandler)
 	b.Handle("pin it", botActions.UnpinHandler)
 	b.Handle("unpin", botActions.UnpinHandler)
 

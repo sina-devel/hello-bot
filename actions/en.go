@@ -17,7 +17,7 @@ func (a *Actions) EnTranslatorHandler(m *tb.Message) {
 	}
 	result, err := gt.Translate(input, "auto", "en")
 	if err != nil {
-		b.Reply(m, err.Error())
+		a.bot.Reply(m, err.Error())
 		return
 	}
 	text := strings.Builder{}

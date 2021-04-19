@@ -2,13 +2,20 @@ package actions
 
 import (
 	tb "gopkg.in/tucnak/telebot.v2"
+	"math/rand"
 	"time"
 )
 
 func (a *Actions) OnDiceHandler(m *tb.Message) {
-	success := "oh my god, you are very lucky"
-	failure := "I have not seen anyone more unlucky than you 🤣"
-	time.Sleep(2 * time.Second)
+	successes := []string{"😎", "😍", "🤠", "🤩", "🙂"}
+	failures := []string{"🤕", "🙁", "😶", "😑", "😭"}
+
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	success := successes[random.Intn(len(failures))]
+	failure := failures[random.Intn(len(failures))]
+
+	time.Sleep(4 * time.Second)
+
 	switch m.Dice.Type {
 	case tb.Cube.Type:
 		switch m.Dice.Value {
@@ -17,9 +24,16 @@ func (a *Actions) OnDiceHandler(m *tb.Message) {
 		default:
 			a.bot.Reply(m, failure)
 		}
-	case tb.Ball.Type, tb.Goal.Type:
+	case tb.Ball.Type:
 		switch m.Dice.Value {
 		case 4, 5:
+			a.bot.Reply(m, success)
+		default:
+			a.bot.Reply(m, failure)
+		}
+	case tb.Goal.Type:
+		switch m.Dice.Value {
+		case 3, 4, 5:
 			a.bot.Reply(m, success)
 		default:
 			a.bot.Reply(m, failure)
