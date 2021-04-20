@@ -2,7 +2,6 @@ package translategooglefree
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 )
 
