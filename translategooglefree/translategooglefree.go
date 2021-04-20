@@ -28,7 +28,7 @@ func Translate(source, sourceLang, targetLang string) (*Result, error) {
 
 	req, err := http.NewRequest("GET", "https://translate.google.com/translate_a/single?client=at&dt=t&dt=ld&dt=qca&dt=rm&dt=bd&dj=1&hl=es-ES&ie=UTF-8&oe=UTF-8&inputm=2&otf=2&iid=1dd3b944-fa62-4b55-b330-74909a99969e&dt=t", nil)
 	if err != nil {
-		return nil, errors.New("can't make request")
+		return nil, err
 	}
 
 	fields := req.URL.Query()
@@ -40,12 +40,12 @@ func Translate(source, sourceLang, targetLang string) (*Result, error) {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, errors.New("can't connect to translate.googleapis.com")
+		return nil, err
 	}
 	defer res.Body.Close()
 
 	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
-		return nil, errors.New("error unmarshalling data")
+		return nil, err
 	}
 
 	return &result, nil
