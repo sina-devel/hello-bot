@@ -28,6 +28,10 @@ func (a *Actions) MuteHandler(m *tb.Message) {
 			}
 
 			u.CanSendMessages = false
+			u.CanSendMedia = false
+                        u.CanSendPolls = false
+                        u.CanSendOther = false
+
 
 			if err := a.bot.Restrict(m.Chat, u); err != nil {
 				a.bot.Reply(m, "I can't change permission")
