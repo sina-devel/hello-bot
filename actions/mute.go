@@ -27,7 +27,7 @@ func (a *Actions) MuteHandler(m *tb.Message) {
 				u.RestrictedUntil = int64(time.Duration(until) * time.Minute)
 			}
 
-			u.Rights = tb.NoRestrictions()
+			u.Rights = tb.NoRights()
 
 			if err := a.bot.Restrict(m.Chat, u); err != nil {
 				a.bot.Reply(m, "I can't change permission")
