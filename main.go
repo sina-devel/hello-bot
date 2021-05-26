@@ -60,8 +60,8 @@ func main() {
 			Description: "mute user for n min (admins)",
 		},
 		{
-			Text:        "umute",
-			Description: "umute user (admins)",
+			Text:        "unmute",
+			Description: "unmute user (admins)",
 		},
 	}); err != nil {
 		log.Fatalln(err)
