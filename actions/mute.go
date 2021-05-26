@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"strconv"
 	"time"
 
 	tb "gopkg.in/tucnak/telebot.v2"
@@ -21,10 +20,6 @@ func (a *Actions) MuteHandler(m *tb.Message) {
 			u, err := a.bot.ChatMemberOf(m.Chat, m.ReplyTo.Sender)
 			if err != nil {
 				a.bot.Reply(m, "WTF")
-			}
-
-			if until, err := strconv.ParseInt(m.Payload, 10, 64); err == nil {
-				u.RestrictedUntil = int64(time.Duration(until) * time.Minute)
 			}
 
 			u.Rights = tb.NoRights()
