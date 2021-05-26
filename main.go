@@ -57,7 +57,7 @@ func main() {
 		},
 		{
 			Text:        "mute",
-			Description: "mute user for n min (admins)",
+			Description: "mute user (admins)",
 		},
 		{
 			Text:        "unmute",
