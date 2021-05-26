@@ -30,7 +30,7 @@ func (a *Actions) MuteHandler(m *tb.Message) {
 			u.CanSendMessages = false
 
 			if err := a.bot.Promote(m.Chat, u); err != nil {
-				a.bot.Reply(m, "I can't")
+				a.bot.Reply(m, "I can't change permission")
 			}
 		}
 	}

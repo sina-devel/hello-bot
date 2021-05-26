@@ -21,7 +21,7 @@ func (a *Actions) UnmuteHandler(m *tb.Message) {
 			u.CanSendMessages = true
 
 			if err := a.bot.Promote(m.Chat, u); err != nil {
-				a.bot.Reply(m, "I can't")
+				a.bot.Reply(m, "I can't change permission")
 			}
 		}
 	}
