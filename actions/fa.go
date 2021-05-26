@@ -2,9 +2,10 @@ package actions
 
 import (
 	"fmt"
+	"strings"
+
 	gt "github.com/sina-devel/hello-bot/translategooglefree"
 	tb "gopkg.in/tucnak/telebot.v2"
-	"strings"
 )
 
 func (a *Actions) FaTranslatorHandler(m *tb.Message) {
@@ -17,7 +18,6 @@ func (a *Actions) FaTranslatorHandler(m *tb.Message) {
 	}
 	result, err := gt.Translate(input, "auto", "fa")
 	if err != nil {
-		a.bot.Reply(m, err.Error())
 		return
 	}
 	text := strings.Builder{}

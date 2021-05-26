@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/sina-devel/hello-bot/actions"
-	tb "gopkg.in/tucnak/telebot.v2"
 	"log"
 	"os"
+
+	"github.com/sina-devel/hello-bot/actions"
+	tb "gopkg.in/tucnak/telebot.v2"
 )
 
 var (
@@ -46,6 +47,22 @@ func main() {
 			Text:        "en",
 			Description: "translation text to english",
 		},
+		{
+			Text:        "pin",
+			Description: "pin messages",
+		},
+		{
+			Text:        "unpin",
+			Description: "unpin messages",
+		},
+		{
+			Text:        "mute",
+			Description: "mute user for n min (admins)",
+		},
+		{
+			Text:        "umute",
+			Description: "umute user (admins)",
+		},
 	}); err != nil {
 		log.Fatalln(err)
 	}
@@ -60,8 +77,10 @@ func main() {
 	b.Handle("/fa", botActions.FaTranslatorHandler)
 	b.Handle("/en", botActions.EnTranslatorHandler)
 	b.Handle("/dice", botActions.DiceHandler)
-	b.Handle("pin it", botActions.PinHandler)
-	b.Handle("unpin", botActions.UnpinHandler)
+	b.Handle("/pin", botActions.PinHandler)
+	b.Handle("/unpin", botActions.UnpinHandler)
+	b.Handle("/mute", botActions.MuteHandler)
+	b.Handle("/unmute", botActions.UnmuteHandler)
 
 	b.Start()
 }
