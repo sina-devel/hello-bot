@@ -1,9 +1,10 @@
 package actions
 
 import (
-	tb "gopkg.in/tucnak/telebot.v2"
 	"log"
 	"time"
+
+	tb "gopkg.in/tucnak/telebot.v2"
 )
 
 func (a *Actions) InviteLinkHandler(m *tb.Message) {

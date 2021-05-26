@@ -1,8 +1,9 @@
 package actions
 
 import (
-	tb "gopkg.in/tucnak/telebot.v2"
 	"regexp"
+
+	tb "gopkg.in/tucnak/telebot.v2"
 )
 
 var cmdRx = regexp.MustCompile(`^(/\w+)(@(\w+))?(\s|$)(?s)(.+)?`)

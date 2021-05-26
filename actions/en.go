@@ -2,9 +2,10 @@ package actions
 
 import (
 	"fmt"
+	"strings"
+
 	gt "github.com/sina-devel/hello-bot/translategooglefree"
 	tb "gopkg.in/tucnak/telebot.v2"
-	"strings"
 )
 
 func (a *Actions) EnTranslatorHandler(m *tb.Message) {

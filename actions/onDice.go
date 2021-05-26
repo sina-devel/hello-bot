@@ -1,9 +1,10 @@
 package actions
 
 import (
-	tb "gopkg.in/tucnak/telebot.v2"
 	"math/rand"
 	"time"
+
+	tb "gopkg.in/tucnak/telebot.v2"
 )
 
 func (a *Actions) OnDiceHandler(m *tb.Message) {
