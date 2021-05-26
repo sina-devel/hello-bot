@@ -18,7 +18,7 @@ func (a *Actions) UnmuteHandler(m *tb.Message) {
 				a.bot.Reply(m, "WTF")
 			}
 
-			u.Rights = tb.NoRights()
+			u.Rights = tb.NoRestrictions()
 
 			if err := a.bot.Restrict(m.Chat, u); err != nil {
 				a.bot.Reply(m, "I can't change permission")
