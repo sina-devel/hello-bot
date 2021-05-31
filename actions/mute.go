@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"time"
-
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
